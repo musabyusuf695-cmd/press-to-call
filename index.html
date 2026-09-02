@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Press to Call</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <main class="app-container">
+
+    <section class="editor-card">
+
+      <h1>Press to Call</h1>
+
+      <p class="subtitle">
+        Create a link that opens your call screen.
+      </p>
+
+
+      <!-- CALL NAME -->
+
+      <label for="callName">
+        Your name
+      </label>
+
+      <input
+        type="text"
+        id="callName"
+        placeholder="Example: Eplus"
+        autocomplete="off"
+      >
+
+
+      <!-- MEDIA TYPE -->
+
+      <label for="mediaType">
+        What should the caller see?
+      </label>
+
+      <select id="mediaType">
+
+        <option value="image">
+          Photo
+        </option>
+
+        <option value="video">
+          Video
+        </option>
+
+      </select>
+
+
+      <!-- MEDIA PATH -->
+
+      <label for="mediaPath">
+        Photo or video path
+      </label>
+
+      <input
+        type="text"
+        id="mediaPath"
+        placeholder="Example: media/photo.jpg"
+        autocomplete="off"
+      >
+
+      <p class="help-text">
+        Enter a file path from your project, such as
+        <strong>media/photo.jpg</strong>, or paste a full media URL.
+      </p>
+
+
+      <!-- CREATE BUTTON -->
+
+      <button
+        id="createCallBtn"
+        type="button"
+      >
+        Create Call Link
+      </button>
+
+
+      <!-- RESULT -->
+
+      <div class="result-box">
+
+        <label for="callLink">
+          Your Press to Call link
+        </label>
+
+        <input
+          type="text"
+          id="callLink"
+          placeholder="Your call link will appear here"
+          readonly
+        >
+
+        <button
+          id="copyCallBtn"
+          type="button"
+          disabled
+        >
+          Copy Link
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- YOUR JAVASCRIPT -->
+
+  <script
+    type="module"
+    src="app.js"
+  ></script>
+
+</body>
+</html>
