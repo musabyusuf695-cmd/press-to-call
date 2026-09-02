@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Incoming Call</title>
+
+  <link rel="stylesheet" href="call.css">
+</head>
+
+<body>
+
+  <main class="call-page">
+
+    <div class="background"></div>
+
+
+    <section class="incoming-call">
+
+      <div class="profile-circle">
+        <div id="profileInitial">?</div>
+      </div>
+
+
+      <h1 id="callerName">
+        Incoming Call
+      </h1>
+
+      <p class="calling-text">
+        Incoming video call...
+      </p>
+
+
+      <div class="call-buttons">
+
+        <!-- DECLINE -->
+
+        <button
+          id="declineBtn"
+          class="call-button decline"
+          type="button"
+          aria-label="Decline call"
+        >
+          ✕
+        </button>
+
+
+        <!-- ANSWER -->
+
+        <button
+          id="answerBtn"
+          class="call-button answer"
+          type="button"
+          aria-label="Answer call"
+        >
+          📹
+        </button>
+
+      </div>
+
+
+      <div class="button-labels">
+
+        <span>Decline</span>
+
+        <span>Answer</span>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script
+    type="module"
+    src="call.js"
+  ></script>
+
+</body>
+</html>
