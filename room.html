@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -8,23 +10,29 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <title>Incoming Call</title>
+  <title>Press to Call</title>
 
   <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body class="room-page">
 
-  <main class="call-screen">
 
-    <!-- PHOTO -->
+<main class="call-screen">
+
+
+  <!-- MAIN PHOTO / VIDEO -->
+
+  <div class="media-container">
+
     <img
       id="callImage"
       class="call-media hidden"
-      alt=""
+      alt="Call media"
     >
 
-    <!-- VIDEO -->
     <video
       id="callVideo"
       class="call-media hidden"
@@ -33,115 +41,269 @@
       playsinline
     ></video>
 
-
-    <!-- DARK OVERLAY -->
-    <div class="call-overlay"></div>
+  </div>
 
 
-    <!-- TOP BAR -->
-    <header class="call-header">
+  <!-- DARK GRADIENT -->
 
-      <div class="caller-info">
+  <div class="call-overlay"></div>
 
-        <div
-          id="callerAvatar"
-          class="caller-avatar"
-        >
-          P
-        </div>
 
-        <div>
+  <!-- TOP BAR -->
 
-          <h1 id="callerName">
-            Press to Call
-          </h1>
+  <header class="top-bar">
 
-          <p id="callStatus">
-            Connecting...
-          </p>
+    <div class="call-time">
 
-        </div>
+      <span class="security-icon">
+        🛡️
+      </span>
 
-      </div>
+      <span id="callTimer">
+        00:00
+      </span>
+
+    </div>
+
+
+    <div class="top-actions">
+
+      <button
+        id="participantsTop"
+        class="top-icon"
+        aria-label="Participants"
+      >
+        👥
+        <span id="participantCount">
+          2
+        </span>
+      </button>
 
 
       <button
         id="moreButton"
-        class="icon-button"
-        type="button"
+        class="top-icon"
         aria-label="More options"
       >
         ⋮
       </button>
 
-    </header>
+    </div>
+
+  </header>
 
 
-    <!-- CENTER INFO -->
-    <section
-      id="centerInfo"
-      class="center-info"
+  <!-- SMALL SELF PREVIEW -->
+
+  <div
+    id="selfPreview"
+    class="self-preview"
+  >
+
+    <video
+      id="selfVideo"
+      autoplay
+      muted
+      playsinline
+    ></video>
+
+    <div
+      id="selfPlaceholder"
+      class="self-placeholder"
+    >
+      You
+    </div>
+
+  </div>
+
+
+  <!-- CENTER INFO -->
+
+  <section
+    id="centerInfo"
+    class="center-info"
+  >
+
+    <div
+      class="center-avatar"
+      id="centerAvatar"
+    >
+      P
+    </div>
+
+    <h2 id="centerName">
+      Press to Call
+    </h2>
+
+    <p id="centerStatus">
+      Connecting...
+    </p>
+
+  </section>
+
+
+  <!-- BOTTOM CONTROLS -->
+
+  <footer class="call-controls">
+
+
+    <!-- MUTE -->
+
+    <button
+      id="muteButton"
+      class="control-item"
     >
 
-      <div
-        id="centerAvatar"
-        class="center-avatar"
+      <span
+        id="muteIcon"
+        class="control-icon"
       >
-        P
-      </div>
+        🎤
+      </span>
 
-      <h2 id="centerName">
-        Press to Call
-      </h2>
+      <span>
+        Mute
+      </span>
 
-      <p id="centerStatus">
-        Connecting...
-      </p>
-
-    </section>
+    </button>
 
 
-    <!-- BOTTOM CONTROLS -->
-    <footer class="call-controls">
 
-      <button
-        id="muteButton"
-        class="control-button"
-        type="button"
-        aria-label="Mute"
+    <!-- VIDEO -->
+
+    <button
+      id="videoButton"
+      class="control-item"
+    >
+
+      <span
+        id="videoIcon"
+        class="control-icon"
       >
-        <span id="muteIcon">🎤</span>
-      </button>
+        📹
+      </span>
+
+      <span id="videoText">
+        Stop Video
+      </span>
+
+    </button>
 
 
-      <button
-        id="speakerButton"
-        class="control-button"
-        type="button"
-        aria-label="Speaker"
-      >
-        🔊
-      </button>
 
+    <!-- END -->
 
-      <button
-        id="endButton"
-        class="end-button"
-        type="button"
-        aria-label="End call"
-      >
+    <button
+      id="endButton"
+      class="control-item end-item"
+    >
+
+      <span class="end-icon">
         📞
-      </button>
+      </span>
 
-    </footer>
+      <span>
+        End
+      </span>
 
-  </main>
+    </button>
 
 
-  <script
-    type="module"
-    src="room.js"
-  ></script>
+
+    <!-- PARTICIPANTS -->
+
+    <button
+      id="participantsButton"
+      class="control-item"
+    >
+
+      <span class="control-icon">
+        👥
+      </span>
+
+      <span>
+        Participants
+      </span>
+
+    </button>
+
+
+
+    <!-- MORE -->
+
+    <button
+      id="bottomMoreButton"
+      class="control-item"
+    >
+
+      <span class="control-icon">
+        •••
+      </span>
+
+      <span>
+        More
+      </span>
+
+    </button>
+
+
+  </footer>
+
+
+  <!-- LOADING -->
+
+  <div
+    id="loadingScreen"
+    class="loading-screen"
+  >
+
+    <div class="loading-spinner"></div>
+
+    <p>
+      Joining call...
+    </p>
+
+  </div>
+
+
+  <!-- ERROR -->
+
+  <div
+    id="errorScreen"
+    class="error-screen hidden"
+  >
+
+    <div class="error-icon">
+      !
+    </div>
+
+    <h2>
+      Call unavailable
+    </h2>
+
+    <p id="errorMessage">
+      This call could not be found.
+    </p>
+
+    <button
+      onclick="goHome()"
+      class="error-button"
+    >
+      Go Home
+    </button>
+
+  </div>
+
+
+</main>
+
+
+<script
+  type="module"
+  src="room.js"
+></script>
+
 
 </body>
+
 </html>
