@@ -489,3 +489,125 @@ window.goHome = function () {
     "index.html";
 
 };
+// ==============================
+// CALL TIMER
+// ==============================
+
+const callTimer =
+  document.getElementById("callTimer");
+
+let seconds = 0;
+
+setInterval(() => {
+
+  seconds++;
+
+  const hours =
+    Math.floor(seconds / 3600);
+
+  const minutes =
+    Math.floor(
+      (seconds % 3600) / 60
+    );
+
+  const secs =
+    seconds % 60;
+
+  callTimer.textContent =
+    String(hours).padStart(2, "0") +
+    ":" +
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(secs).padStart(2, "0");
+
+}, 1000);
+
+
+// ==============================
+// STOP / START VIDEO BUTTON
+// ==============================
+
+const videoButton =
+  document.getElementById("videoButton");
+
+const videoIcon =
+  document.getElementById("videoIcon");
+
+const videoText =
+  document.getElementById("videoText");
+
+let videoStopped = false;
+
+videoButton.addEventListener(
+  "click",
+  () => {
+
+    videoStopped =
+      !videoStopped;
+
+
+    if (videoStopped) {
+
+      callVideo.style.visibility =
+        "hidden";
+
+      callImage.style.visibility =
+        "hidden";
+
+      videoIcon.textContent =
+        "📹";
+
+      videoText.textContent =
+        "Start Video";
+
+      videoButton.classList.add(
+        "active"
+      );
+
+    } else {
+
+      callVideo.style.visibility =
+        "visible";
+
+      callImage.style.visibility =
+        "visible";
+
+      videoIcon.textContent =
+        "📹";
+
+      videoText.textContent =
+        "Stop Video";
+
+      videoButton.classList.remove(
+        "active"
+      );
+
+    }
+
+  }
+);
+
+
+// ==============================
+// PARTICIPANTS
+// ==============================
+
+const participantsButton =
+  document.getElementById(
+    "participantsButton"
+  );
+
+if (participantsButton) {
+
+  participantsButton.addEventListener(
+    "click",
+    () => {
+
+      alert(
+        "Participants: 2"
+      );
+
+    }
+  );
+
+}
