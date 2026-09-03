@@ -2,82 +2,94 @@
 // ROOM.JS
 // ==============================
 
-import { db } from "./firebase.js";
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
+  getFirestore,
   doc,
   getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 // ==============================
-// GET ELEMENTS
+// FIREBASE CONFIG
 // ==============================
 
-const callImage = document.getElementById("callImage");
-const callVideo = document.getElementById("callVideo");
-
-const loadingScreen = document.getElementById("loadingScreen");
-const errorScreen = document.getElementById("errorScreen");
-const errorMessage = document.getElementById("errorMessage");
-
-const callerName = document.getElementById("callerName");
-const centerName = document.getElementById("centerName");
-
-const callStatus = document.getElementById("callStatus");
-const centerStatus = document.getElementById("centerStatus");
-
-const callerAvatar = document.getElementById("callerAvatar");
-const centerAvatar = document.getElementById("centerAvatar");
-
-const centerInfo = document.getElementById("centerInfo");
-
-const muteButton = document.getElementById("muteButton");
-const muteIcon = document.getElementById("muteIcon");
-
-const speakerButton = document.getElementById("speakerButton");
-const endButton = document.getElementById("endButton");
+const firebaseConfig = {
+  apiKey: "AIzaSyDEJv47nDpckV_pOu1roa1dAyEoMCCQU5A",
+  authDomain: "press-to-call.firebaseapp.com",
+  projectId: "press-to-call",
+  storageBucket: "press-to-call.firebasestorage.app",
+  messagingSenderId: "1067913620438",
+  appId: "1:1067913620438:web:2576355fbd191e17aa1277"
+};
 
 
 // ==============================
-// HIDE EVERYTHING FIRST
+// START FIREBASE
 // ==============================
 
-if (loadingScreen) {
-  loadingScreen.style.display = "none";
-}
+const app = initializeApp(firebaseConfig);
 
-if (errorScreen) {
-  errorScreen.style.display = "none";
-}
+const db = getFirestore(app);
 
-if (callImage) {
-  callImage.style.display = "none";
-}
 
-if (callVideo) {
-  callVideo.style.display = "none";
-}
+// ==============================
+// HTML ELEMENTS
+// ==============================
+
+const callImage =
+  document.getElementById("callImage");
+
+const callVideo =
+  document.getElementById("callVideo");
+
+const callerName =
+  document.getElementById("callerName");
+
+const centerName =
+  document.getElementById("centerName");
+
+const callStatus =
+  document.getElementById("callStatus");
+
+const centerStatus =
+  document.getElementById("centerStatus");
+
+const callerAvatar =
+  document.getElementById("callerAvatar");
+
+const centerAvatar =
+  document.getElementById("centerAvatar");
+
+const centerInfo =
+  document.getElementById("centerInfo");
+
+const muteButton =
+  document.getElementById("muteButton");
+
+const muteIcon =
+  document.getElementById("muteIcon");
+
+const speakerButton =
+  document.getElementById("speakerButton");
+
+const endButton =
+  document.getElementById("endButton");
 
 
 // ==============================
 // GET CALL ID
-// Accept BOTH ?call= and ?id=
+// IMPORTANT: USE "call"
 // ==============================
 
-const urlParams =
+const params =
   new URLSearchParams(window.location.search);
 
 const callId =
-  urlParams.get("call") ||
-  urlParams.get("id");
-
-
-// ==============================
-// START
-// ==============================
-
-loadCall();
+  params.get("call");
 
 
 // ==============================
@@ -86,13 +98,13 @@ loadCall();
 
 async function loadCall() {
 
+  // Stop if there is no ID
   if (!callId) {
 
-    showError(
-      "This call link is invalid."
-    );
+    showFallback();
 
     return;
+
   }
 
 
@@ -105,13 +117,13 @@ async function loadCall() {
       await getDoc(callRef);
 
 
+    // Call not found
     if (!callSnapshot.exists()) {
 
-      showError(
-        "This call could not be found."
-      );
+      showFallback();
 
       return;
+
     }
 
 
@@ -119,10 +131,13 @@ async function loadCall() {
       callSnapshot.data();
 
 
-    // ==========================
-    // GET MEDIA
-    // ==========================
+    // Get caller name
+    const name =
+      callData.name ||
+      "Press to Call";
 
+
+    // Get media
     const mediaPath =
       callData.mediaPath ||
       callData.media ||
@@ -138,93 +153,77 @@ async function loadCall() {
       ).toLowerCase();
 
 
-    const name =
-      callData.name ||
-      "Musab";
+    // Update text
+    callerName.textContent =
+      name;
 
-
-    if (!mediaPath) {
-
-      showError(
-        "No call media was found."
-      );
-
-      return;
-    }
-
-
-    // ==========================
-    // SET NAME
-    // ==========================
-
-    if (callerName) {
-      callerName.textContent = name;
-    }
-
-    if (centerName) {
-      centerName.textContent = name;
-    }
+    centerName.textContent =
+      name;
 
 
     const firstLetter =
       name.charAt(0).toUpperCase();
 
+    callerAvatar.textContent =
+      firstLetter;
 
-    if (callerAvatar) {
-      callerAvatar.textContent =
-        firstLetter;
-    }
-
-    if (centerAvatar) {
-      centerAvatar.textContent =
-        firstLetter;
-    }
+    centerAvatar.textContent =
+      firstLetter;
 
 
     // ==========================
-    // SET STATUS
-    // ==========================
-
-    if (callStatus) {
-      callStatus.textContent =
-        "In call";
-    }
-
-    if (centerStatus) {
-      centerStatus.textContent =
-        "In call";
-    }
-
-
-    // ==========================
-    // SHOW MEDIA IMMEDIATELY
+    // SHOW VIDEO
     // ==========================
 
     if (
       mediaType === "video" ||
-      mediaType === "vid" ||
-      mediaPath.toLowerCase()
-        .includes(".mp4") ||
-      mediaPath.toLowerCase()
-        .includes(".webm")
+      mediaType === "vid"
     ) {
 
-      showVideo(mediaPath);
+      showVideo(
+        mediaPath
+      );
 
-    } else {
+    }
 
-      showImage(mediaPath);
+    // ==========================
+    // SHOW PHOTO
+    // ==========================
+
+    else {
+
+      showPhoto(
+        mediaPath
+      );
 
     }
 
 
-  } catch (error) {
+    // Change status after loading
+    setTimeout(() => {
 
-    console.error(error);
+      callStatus.textContent =
+        "In call";
 
-    showError(
-      "Could not connect to this call."
+      centerStatus.textContent =
+        "In call";
+
+      centerInfo.classList.add(
+        "call-connected"
+      );
+
+    }, 800);
+
+
+  }
+  catch (error) {
+
+    console.error(
+      "Call error:",
+      error
     );
+
+    showFallback();
 
   }
 
@@ -232,45 +231,52 @@ async function loadCall() {
 
 
 // ==============================
-// SHOW IMAGE
+// SHOW PHOTO
 // ==============================
 
-function showImage(src) {
+function showPhoto(mediaPath) {
 
-  if (callVideo) {
+  // If no path, use fallback
+  if (!mediaPath) {
 
-    callVideo.pause();
+    showFallback();
 
-    callVideo.removeAttribute("src");
-
-    callVideo.style.display =
-      "none";
+    return;
 
   }
 
 
-  if (callImage) {
+  callVideo.pause();
 
-    callImage.onload = () => {
+  callVideo.removeAttribute(
+    "src"
+  );
 
-      callImage.style.display =
-        "block";
+  callVideo.classList.add(
+    "hidden"
+  );
 
-    };
+
+  callImage.src =
+    mediaPath;
+
+  callImage.classList.remove(
+    "hidden"
+  );
 
 
-    callImage.onerror = () => {
+  // If image fails
+  callImage.onerror =
+    () => {
 
-      showError(
-        "The call photo could not be loaded."
+      console.error(
+        "Image could not load:",
+        mediaPath
       );
 
+      showFallback();
+
     };
-
-
-    callImage.src = src;
-
-  }
 
 }
 
@@ -279,93 +285,106 @@ function showImage(src) {
 // SHOW VIDEO
 // ==============================
 
-function showVideo(src) {
+function showVideo(mediaPath) {
 
-  if (callImage) {
+  // If no video path
+  if (!mediaPath) {
 
-    callImage.style.display =
-      "none";
+    showFallback();
+
+    return;
 
   }
 
 
-  if (callVideo) {
-
-    callVideo.muted = true;
-
-    callVideo.playsInline = true;
-
-    callVideo.autoplay = true;
-
-    callVideo.loop = true;
+  callImage.classList.add(
+    "hidden"
+  );
 
 
-    callVideo.oncanplay = () => {
+  callVideo.src =
+    mediaPath;
 
-      callVideo.style.display =
-        "block";
+  callVideo.classList.remove(
+    "hidden"
+  );
+
+
+  callVideo.load();
+
+
+  // Try playing
+  callVideo.play()
+    .catch(() => {
+
+      // Mobile browsers may block sound
+      callVideo.muted = true;
 
       callVideo.play()
         .catch(error => {
 
           console.log(
-            "Video play error:",
+            "Video could not autoplay:",
             error
           );
 
         });
 
-    };
+    });
 
 
-    callVideo.onerror = () => {
+  // If video cannot load
+  callVideo.onerror =
+    () => {
 
-      showError(
-        "The call video could not be loaded."
+      console.error(
+        "Video could not load:",
+        mediaPath
       );
 
+      showFallback();
+
     };
-
-
-    callVideo.src = src;
-
-    callVideo.load();
-
-  }
 
 }
 
 
 // ==============================
-// SHOW ERROR
+// FALLBACK
 // ==============================
 
-function showError(message) {
+function showFallback() {
 
-  if (callImage) {
-    callImage.style.display =
-      "none";
-  }
+  // Hide video
+  callVideo.pause();
 
-  if (callVideo) {
-    callVideo.style.display =
-      "none";
-  }
+  callVideo.removeAttribute(
+    "src"
+  );
 
-  if (centerInfo) {
-    centerInfo.style.display =
-      "none";
-  }
+  callVideo.classList.add(
+    "hidden"
+  );
 
-  if (errorMessage) {
-    errorMessage.textContent =
-      message;
-  }
 
-  if (errorScreen) {
-    errorScreen.style.display =
-      "flex";
-  }
+  // Hide image
+  callImage.classList.add(
+    "hidden"
+  );
+
+
+  // Still show a clean call screen
+  callerName.textContent =
+    "Press to Call";
+
+  centerName.textContent =
+    "Press to Call";
+
+  callStatus.textContent =
+    "Connecting...";
+
+  centerStatus.textContent =
+    "Connecting...";
 
 }
 
@@ -376,127 +395,101 @@ function showError(message) {
 
 let muted = false;
 
-if (muteButton) {
 
-  muteButton.addEventListener(
-    "click",
-    () => {
+muteButton.addEventListener(
+  "click",
+  () => {
 
-      muted = !muted;
+    muted = !muted;
 
 
-      if (muteIcon) {
+    if (muted) {
 
-        muteIcon.textContent =
-          muted
-            ? "🔇"
-            : "🎤";
+      muteIcon.textContent =
+        "🔇";
 
-      }
-
-      muteButton.classList.toggle(
-        "active",
-        muted
+      muteButton.classList.add(
+        "active"
       );
 
     }
-  );
+    else {
 
-}
+      muteIcon.textContent =
+        "🎤";
+
+      muteButton.classList.remove(
+        "active"
+      );
+
+    }
+
+  }
+);
 
 
 // ==============================
 // SPEAKER
 // ==============================
 
-let speakerOn = false;
-
-if (speakerButton) {
-
-  speakerButton.addEventListener(
-    "click",
-    () => {
-
-      speakerOn = !speakerOn;
+let speakerOn = true;
 
 
-      if (callVideo) {
+speakerButton.addEventListener(
+  "click",
+  () => {
 
-        callVideo.muted =
-          !speakerOn;
-
-      }
+    speakerOn =
+      !speakerOn;
 
 
-      speakerButton.textContent =
-        speakerOn
-          ? "🔊"
-          : "🔇";
+    if (!callVideo.classList.contains("hidden")) {
 
-      speakerButton.classList.toggle(
-        "active",
-        !speakerOn
-      );
+      callVideo.muted =
+        !speakerOn;
 
     }
-  );
 
-}
+
+    speakerButton.textContent =
+      speakerOn
+        ? "🔊"
+        : "🔇";
+
+  }
+);
 
 
 // ==============================
 // END CALL
 // ==============================
 
-if (endButton) {
-
-  endButton.addEventListener(
-    "click",
-    endCall
-  );
-
-}
-
-
-function endCall() {
-
-  if (callVideo) {
+endButton.addEventListener(
+  "click",
+  () => {
 
     callVideo.pause();
 
-    callVideo.removeAttribute("src");
-
-  }
-
-
-  if (callStatus) {
     callStatus.textContent =
       "Call ended";
-  }
 
-  if (centerStatus) {
     centerStatus.textContent =
       "Call ended";
+
+
+    setTimeout(() => {
+
+      window.location.href =
+        "index.html";
+
+    }, 800);
+
   }
-
-
-  setTimeout(() => {
-
-    window.location.href =
-      "index.html";
-
-  }, 500);
-
-}
+);
 
 
 // ==============================
-// GO HOME
+// START
 // ==============================
 
-window.goHome = function () {
-
-  window.location.href =
-    "index.html";
-
-};
+loadCall();
