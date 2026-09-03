@@ -1,3 +1,12 @@
+// ==============================
+// ROOM.JS - CORRECT VERSION
+// ==============================
+
+
+// ==============================
+// FIREBASE IMPORTS
+// ==============================
+
 import { initializeApp } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
@@ -36,46 +45,69 @@ const db = getFirestore(app);
 // GET PAGE ELEMENTS
 // ==============================
 
-const callImage = document.getElementById("callImage");
+const callImage =
+  document.getElementById("callImage");
 
-const callVideo = document.getElementById("callVideo");
+const callVideo =
+  document.getElementById("callVideo");
 
-const loadingScreen = document.getElementById("loadingScreen");
+const loadingScreen =
+  document.getElementById("loadingScreen");
 
-const errorScreen = document.getElementById("errorScreen");
+const errorScreen =
+  document.getElementById("errorScreen");
 
-const errorMessage = document.getElementById("errorMessage");
+const errorMessage =
+  document.getElementById("errorMessage");
 
-const callerName = document.getElementById("callerName");
+const callerName =
+  document.getElementById("callerName");
 
-const centerName = document.getElementById("centerName");
+const centerName =
+  document.getElementById("centerName");
 
-const callStatus = document.getElementById("callStatus");
+const callStatus =
+  document.getElementById("callStatus");
 
-const centerStatus = document.getElementById("centerStatus");
+const centerStatus =
+  document.getElementById("centerStatus");
 
-const callerAvatar = document.getElementById("callerAvatar");
+const callerAvatar =
+  document.getElementById("callerAvatar");
 
-const centerAvatar = document.getElementById("centerAvatar");
+const centerAvatar =
+  document.getElementById("centerAvatar");
 
-const centerInfo = document.getElementById("centerInfo");
+const centerInfo =
+  document.getElementById("centerInfo");
 
-const muteButton = document.getElementById("muteButton");
+const muteButton =
+  document.getElementById("muteButton");
 
-const muteIcon = document.getElementById("muteIcon");
+const muteIcon =
+  document.getElementById("muteIcon");
 
-const speakerButton = document.getElementById("speakerButton");
+const speakerButton =
+  document.getElementById("speakerButton");
 
-const endButton = document.getElementById("endButton");
+const endButton =
+  document.getElementById("endButton");
 
 
 // ==============================
 // GET CALL ID FROM LINK
+// IMPORTANT: SUPPORTS BOTH
+// ?call= AND ?id=
 // ==============================
 
-const urlParams = new URLSearchParams(window.location.search);
+const urlParams =
+  new URLSearchParams(
+    window.location.search
+  );
 
-const callId = urlParams.get("id");
+const callId =
+  urlParams.get("call") ||
+  urlParams.get("id");
 
 
 // ==============================
@@ -104,74 +136,61 @@ async function loadCall() {
 
   try {
 
-    // Get the call document
-    const callRef = doc(
-      db,
-      "calls",
-      callId
-    );
+    // Get call document
+    const callRef =
+      doc(
+        db,
+        "calls",
+        callId
+      );
 
-    const callSnapshot = await getDoc(callRef);
+    const callSnapshot =
+      await getDoc(callRef);
 
 
-    // Check if call exists
+    // Call does not exist
     if (!callSnapshot.exists()) {
 
       showError(
-        "This call does not exist or may have expired."
+        "This call could not be found."
       );
 
       return;
     }
 
 
-    // Get data
-    const callData = callSnapshot.data();
+    // Get call data
+    const callData =
+      callSnapshot.data();
 
-    console.log("Call loaded:", callData);
-
-
-    // Media path
-    const mediaPath =
-      callData.mediaPath ||
-      callData.media ||
-      callData.url ||
-      callData.path;
+    console.log(
+      "Call loaded:",
+      callData
+    );
 
 
-    // Media type
-    const mediaType =
-      callData.mediaType ||
-      callData.type ||
-      "photo";
+    // ==============================
+    // GET CALLER NAME
+    // ==============================
 
-
-    // Optional caller name
     const name =
       callData.name ||
       "Press to Call";
 
 
-    // Check media
-    if (!mediaPath) {
+    callerName.textContent =
+      name;
 
-      showError(
-        "This call does not contain a photo or video."
-      );
-
-      return;
-    }
-
-
-    // Update names
-    callerName.textContent = name;
-
-    centerName.textContent = name;
+    centerName.textContent =
+      name;
 
 
     // Avatar letter
     const firstLetter =
-      name.charAt(0).toUpperCase();
+      name
+        .charAt(0)
+        .toUpperCase();
+
 
     callerAvatar.textContent =
       firstLetter;
@@ -180,14 +199,64 @@ async function loadCall() {
       firstLetter;
 
 
-    // Display media
+    // ==============================
+    // GET MEDIA TYPE
+    // ==============================
+
+    const mediaType =
+      callData.mediaType ||
+      callData.type ||
+      "photo";
+
+
+    // ==============================
+    // GET MEDIA PATH
+    // ==============================
+
+    let mediaPath =
+      callData.mediaPath ||
+      callData.media ||
+      callData.url ||
+      callData.path;
+
+
+    // If Firestore has no media path,
+    // use your files in the main folder
+
+    if (!mediaPath) {
+
+      if (
+        String(mediaType)
+          .toLowerCase() === "video"
+      ) {
+
+        mediaPath =
+          "video.mp4";
+
+      } else {
+
+        mediaPath =
+          "photo.jpg";
+
+      }
+
+    }
+
+
+    // ==============================
+    // SHOW PHOTO OR VIDEO
+    // ==============================
+
     showMedia(
       mediaPath,
       mediaType
     );
 
 
-    // Simulate connecting
+    // ==============================
+    // CONNECTING STATUS
+    // ==============================
+
     callStatus.textContent =
       "Connecting...";
 
@@ -195,10 +264,14 @@ async function loadCall() {
       "Connecting...";
 
 
-    // Hide loading after media loads
+    // Wait for the call screen
+
     setTimeout(() => {
 
-      loadingScreen.classList.add("hidden");
+      loadingScreen.classList.add(
+        "hidden"
+      );
+
 
       callStatus.textContent =
         "In call";
@@ -206,14 +279,25 @@ async function loadCall() {
       centerStatus.textContent =
         "In call";
 
-      // Hide the large center information
-      // so the media becomes the main focus
-      centerInfo.classList.add("call-connected");
+
+      // Hide center information
+      // if your CSS supports this
+
+      if (centerInfo) {
+
+        centerInfo.classList.add(
+          "call-connected"
+        );
+
+      }
+
 
     }, 1200);
 
 
   }
+
+
   catch (error) {
 
     console.error(
@@ -221,8 +305,9 @@ async function loadCall() {
       error
     );
 
+
     showError(
-      "Could not connect to this call. Please try again."
+      "Could not connect to this call."
     );
 
   }
@@ -240,79 +325,122 @@ function showMedia(
 ) {
 
   const type =
-    String(mediaType).toLowerCase();
+    String(
+      mediaType
+    ).toLowerCase();
 
 
-  // --------------------------
+  // ==============================
   // VIDEO
-  // --------------------------
+  // ==============================
 
   if (
     type === "video" ||
     type === "vid"
   ) {
 
-    callImage.classList.add(
-      "hidden"
-    );
+    // Hide image
 
-    callVideo.classList.remove(
-      "hidden"
-    );
+    if (callImage) {
 
-    callVideo.src =
-      mediaPath;
+      callImage.classList.add(
+        "hidden"
+      );
 
-    callVideo.muted = false;
-
-    callVideo.load();
+    }
 
 
-    callVideo.play()
-      .catch(() => {
+    // Show video
 
-        // Some mobile browsers block
-        // autoplay with sound.
-        callVideo.muted = true;
+    if (callVideo) {
 
-        callVideo.play()
-          .catch(error => {
+      callVideo.classList.remove(
+        "hidden"
+      );
+
+      callVideo.src =
+        mediaPath;
+
+      callVideo.loop =
+        true;
+
+      callVideo.playsInline =
+        true;
+
+      callVideo.muted =
+        true;
+
+      callVideo.load();
+
+
+      callVideo.play()
+        .catch(
+          error => {
 
             console.log(
-              "Video autoplay blocked:",
+              "Video needs user interaction:",
               error
             );
 
-          });
+          }
+        );
 
-      });
+    }
 
   }
 
 
-  // --------------------------
+  // ==============================
   // PHOTO
-  // --------------------------
+  // ==============================
 
   else {
 
-    callVideo.pause();
+    // Stop video
 
-    callVideo.removeAttribute(
-      "src"
-    );
+    if (callVideo) {
 
-    callVideo.classList.add(
-      "hidden"
-    );
+      callVideo.pause();
+
+      callVideo.removeAttribute(
+        "src"
+      );
+
+      callVideo.load();
+
+      callVideo.classList.add(
+        "hidden"
+      );
+
+    }
 
 
-    callImage.classList.remove(
-      "hidden"
-    );
+    // Show image
 
-    callImage.src =
-      mediaPath;
+    if (callImage) {
+
+      callImage.classList.remove(
+        "hidden"
+      );
+
+      callImage.src =
+        mediaPath;
+
+
+      // Show error in console
+      // if photo cannot load
+
+      callImage.onerror =
+        () => {
+
+          console.error(
+            "Could not load image:",
+            mediaPath
+          );
+
+        };
+
+    }
 
   }
 
@@ -325,20 +453,39 @@ function showMedia(
 
 function showError(message) {
 
-  loadingScreen.classList.add(
-    "hidden"
-  );
+  if (loadingScreen) {
 
-  centerInfo.classList.add(
-    "hidden"
-  );
+    loadingScreen.classList.add(
+      "hidden"
+    );
 
-  errorMessage.textContent =
-    message;
+  }
 
-  errorScreen.classList.remove(
-    "hidden"
-  );
+
+  if (centerInfo) {
+
+    centerInfo.classList.add(
+      "hidden"
+    );
+
+  }
+
+
+  if (errorMessage) {
+
+    errorMessage.textContent =
+      message;
+
+  }
+
+
+  if (errorScreen) {
+
+    errorScreen.classList.remove(
+      "hidden"
+    );
+
+  }
 
 }
 
@@ -347,129 +494,194 @@ function showError(message) {
 // MUTE BUTTON
 // ==============================
 
-let muted = false;
-
-muteButton.addEventListener(
-  "click",
-  () => {
-
-    muted = !muted;
+let muted =
+  false;
 
 
-    if (muted) {
+if (muteButton) {
 
-      muteIcon.textContent =
-        "🔇";
+  muteButton.addEventListener(
+    "click",
+    () => {
 
-      muteButton.classList.add(
-        "active"
-      );
+      muted =
+        !muted;
+
+
+      if (muted) {
+
+        if (muteIcon) {
+
+          muteIcon.textContent =
+            "🔇";
+
+        }
+
+
+        muteButton.classList.add(
+          "active"
+        );
+
+      }
+
+      else {
+
+        if (muteIcon) {
+
+          muteIcon.textContent =
+            "🎤";
+
+        }
+
+
+        muteButton.classList.remove(
+          "active"
+        );
+
+      }
 
     }
+  );
 
-    else {
-
-      muteIcon.textContent =
-        "🎤";
-
-      muteButton.classList.remove(
-        "active"
-      );
-
-    }
-
-  }
-);
+}
 
 
 // ==============================
 // SPEAKER BUTTON
 // ==============================
 
-let speakerOn = true;
-
-speakerButton.addEventListener(
-  "click",
-  () => {
-
-    speakerOn = !speakerOn;
+let speakerOn =
+  true;
 
 
-    if (
-      !callVideo.classList.contains(
-        "hidden"
-      )
-    ) {
+if (speakerButton) {
 
-      callVideo.muted =
+  speakerButton.addEventListener(
+    "click",
+    () => {
+
+      speakerOn =
         !speakerOn;
 
+
+      // Control video sound
+
+      if (
+        callVideo &&
+        !callVideo.classList.contains(
+          "hidden"
+        )
+      ) {
+
+        callVideo.muted =
+          !speakerOn;
+
+      }
+
+
+      if (speakerOn) {
+
+        speakerButton.classList.remove(
+          "active"
+        );
+
+        speakerButton.textContent =
+          "🔊";
+
+      }
+
+      else {
+
+        speakerButton.classList.add(
+          "active"
+        );
+
+        speakerButton.textContent =
+          "🔇";
+
+      }
+
     }
+  );
 
-
-    if (speakerOn) {
-
-      speakerButton.classList.remove(
-        "active"
-      );
-
-      speakerButton.textContent =
-        "🔊";
-
-    }
-
-    else {
-
-      speakerButton.classList.add(
-        "active"
-      );
-
-      speakerButton.textContent =
-        "🔇";
-
-    }
-
-  }
-);
+}
 
 
 // ==============================
 // END CALL
 // ==============================
 
-endButton.addEventListener(
-  "click",
-  endCall
-);
+if (endButton) {
+
+  endButton.addEventListener(
+    "click",
+    endCall
+  );
+
+}
 
 
 function endCall() {
 
   // Stop video
-  if (!callVideo.paused) {
+
+  if (callVideo) {
 
     callVideo.pause();
+
+    callVideo.removeAttribute(
+      "src"
+    );
 
   }
 
 
-  // Change screen text
-  callStatus.textContent =
-    "Call ended";
+  // Update text
 
-  centerStatus.textContent =
-    "Call ended";
+  if (callStatus) {
 
+    callStatus.textContent =
+      "Call ended";
 
-  // Disable buttons
-  muteButton.disabled = true;
-
-  speakerButton.disabled = true;
-
-  endButton.disabled = true;
+  }
 
 
-  // Redirect after a moment
+  if (centerStatus) {
+
+    centerStatus.textContent =
+      "Call ended";
+
+  }
+
+
+  // Disable controls
+
+  if (muteButton) {
+
+    muteButton.disabled =
+      true;
+
+  }
+
+
+  if (speakerButton) {
+
+    speakerButton.disabled =
+      true;
+
+  }
+
+
+  if (endButton) {
+
+    endButton.disabled =
+      true;
+
+  }
+
+
+  // Return home
+
   setTimeout(() => {
 
     window.location.href =
@@ -484,9 +696,10 @@ function endCall() {
 // GO HOME
 // ==============================
 
-window.goHome = function () {
+window.goHome =
+  function () {
 
-  window.location.href =
-    "index.html";
+    window.location.href =
+      "index.html";
 
-};
+  };
