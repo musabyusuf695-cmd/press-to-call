@@ -157,3 +157,74 @@ select:focus {
   }
   
 }
+ /* ==============================
+   FIX FULL SCREEN CALL MEDIA
+============================== */
+
+.room-page {
+  margin: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #111827;
+}
+
+.call-screen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #111827;
+}
+
+.call-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  z-index: 1;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.call-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.45),
+      rgba(0, 0, 0, 0.05) 40%,
+      rgba(0, 0, 0, 0.65)
+    );
+  pointer-events: none;
+}
+
+.call-header,
+.center-info,
+.call-controls {
+  position: absolute;
+  z-index: 3;
+}
+
+.call-header {
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.center-info {
+  left: 0;
+  right: 0;
+}
+
+.call-controls {
+  left: 0;
+  right: 0;
+  bottom: 30px;
+}
