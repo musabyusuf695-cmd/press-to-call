@@ -4,10 +4,7 @@
 <head>
   <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Incoming Call</title>
 
@@ -22,14 +19,28 @@
 
     <section class="incoming-call">
 
+      <!-- PROFILE PHOTO / VIDEO -->
+
       <div class="profile-circle">
 
+        <!-- Photo -->
         <img
           id="profileImage"
-          src=""
           alt="Caller"
+          style="display: none;"
         >
 
+        <!-- Video -->
+        <video
+          id="profileVideo"
+          autoplay
+          muted
+          loop
+          playsinline
+          style="display: none;"
+        ></video>
+
+        <!-- Fallback letter -->
         <div id="profileInitial">?</div>
 
       </div>
@@ -82,10 +93,7 @@
   </main>
 
 
-  <script
-    type="module"
-    src="call.js"
-  ></script>
+  <script type="module" src="call.js"></script>
 
 </body>
 
