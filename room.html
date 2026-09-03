@@ -8,59 +8,33 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <title>Press to Call</title>
+  <title>Incoming Call</title>
 
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="room-page">
 
-  <!-- CALL SCREEN -->
   <main class="call-screen">
 
-    <!-- Background media -->
-    <div class="media-container">
+    <!-- PHOTO -->
+    <img
+      id="callImage"
+      class="call-media hidden"
+      alt=""
+    >
 
-      <img
-        id="callImage"
-        class="call-media hidden"
-        alt="Call media"
-      >
-
-      <video
-        id="callVideo"
-        class="call-media hidden"
-        autoplay
-        loop
-        playsinline
-        controlslist="nodownload"
-      ></video>
-
-      <!-- Loading -->
-      <div id="loadingScreen" class="loading-screen">
-        <div class="loading-spinner"></div>
-        <p>Joining call...</p>
-      </div>
-
-      <!-- Error -->
-      <div id="errorScreen" class="error-screen hidden">
-        <div class="error-icon">!</div>
-
-        <h2>Call unavailable</h2>
-
-        <p id="errorMessage">
-          This call could not be found.
-        </p>
-
-        <button onclick="goHome()" class="error-button">
-          Go Home
-        </button>
-      </div>
-
-    </div>
+    <!-- VIDEO -->
+    <video
+      id="callVideo"
+      class="call-media hidden"
+      autoplay
+      loop
+      playsinline
+    ></video>
 
 
-    <!-- Dark overlay -->
+    <!-- DARK OVERLAY -->
     <div class="call-overlay"></div>
 
 
@@ -69,11 +43,15 @@
 
       <div class="caller-info">
 
-        <div id="callerAvatar" class="caller-avatar">
+        <div
+          id="callerAvatar"
+          class="caller-avatar"
+        >
           P
         </div>
 
         <div>
+
           <h1 id="callerName">
             Press to Call
           </h1>
@@ -81,13 +59,16 @@
           <p id="callStatus">
             Connecting...
           </p>
+
         </div>
 
       </div>
 
+
       <button
         id="moreButton"
         class="icon-button"
+        type="button"
         aria-label="More options"
       >
         ⋮
@@ -96,10 +77,16 @@
     </header>
 
 
-    <!-- CENTER STATUS -->
-    <section id="centerInfo" class="center-info">
+    <!-- CENTER INFO -->
+    <section
+      id="centerInfo"
+      class="center-info"
+    >
 
-      <div class="center-avatar" id="centerAvatar">
+      <div
+        id="centerAvatar"
+        class="center-avatar"
+      >
         P
       </div>
 
@@ -120,22 +107,27 @@
       <button
         id="muteButton"
         class="control-button"
+        type="button"
         aria-label="Mute"
       >
         <span id="muteIcon">🎤</span>
       </button>
 
+
       <button
         id="speakerButton"
         class="control-button"
+        type="button"
         aria-label="Speaker"
       >
         🔊
       </button>
 
+
       <button
         id="endButton"
         class="end-button"
+        type="button"
         aria-label="End call"
       >
         📞
@@ -146,7 +138,10 @@
   </main>
 
 
-  <script type="module" src="room.js"></script>
+  <script
+    type="module"
+    src="room.js"
+  ></script>
 
 </body>
 </html>
