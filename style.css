@@ -228,3 +228,448 @@ select:focus {
   right: 0;
   bottom: 30px;
 }
+ /* =========================
+   REALISTIC CALL SCREEN
+========================= */
+
+.room-page {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.call-screen {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #111;
+}
+
+
+/* =========================
+   MAIN MEDIA
+========================= */
+
+.media-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #111;
+}
+
+.call-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+/* =========================
+   DARK OVERLAY
+========================= */
+
+.call-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.55),
+      rgba(0,0,0,.05) 30%,
+      rgba(0,0,0,.05) 60%,
+      rgba(0,0,0,.75)
+    );
+}
+
+
+/* =========================
+   TOP BAR
+========================= */
+
+.top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 10;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding:
+    max(20px, env(safe-area-inset-top))
+    20px
+    10px;
+}
+
+.call-time {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: white;
+  font-size: 20px;
+}
+
+.security-icon {
+  font-size: 22px;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.top-icon {
+  border: none;
+  background: transparent;
+  color: white;
+
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.top-icon span {
+  font-size: 18px;
+}
+
+
+/* =========================
+   SELF PREVIEW
+========================= */
+
+.self-preview {
+  position: absolute;
+
+  top: 70px;
+  right: 16px;
+
+  width: 150px;
+  height: 200px;
+
+  z-index: 15;
+
+  border-radius: 22px;
+
+  overflow: hidden;
+
+  background: #222;
+
+  border: 2px solid rgba(255,255,255,.85);
+
+  box-shadow:
+    0 5px 20px rgba(0,0,0,.45);
+}
+
+#selfVideo {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.self-placeholder {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #333;
+
+  color: white;
+
+  font-size: 20px;
+}
+
+
+/* =========================
+   CENTER INFO
+========================= */
+
+.center-info {
+  position: absolute;
+
+  top: 40%;
+  left: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  z-index: 10;
+
+  color: white;
+
+  text-align: center;
+
+  transition:
+    opacity .4s ease;
+}
+
+.call-connected {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.center-avatar {
+  width: 100px;
+  height: 100px;
+
+  margin: auto;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 45px;
+
+  background: #3b82f6;
+
+  margin-bottom: 18px;
+}
+
+
+/* =========================
+   BOTTOM CONTROLS
+========================= */
+
+.call-controls {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  bottom:
+    max(25px, env(safe-area-inset-bottom));
+
+  z-index: 20;
+
+  display: flex;
+
+  justify-content: space-around;
+
+  align-items: flex-start;
+
+  padding: 0 8px;
+}
+
+.control-item {
+  border: none;
+
+  background: transparent;
+
+  color: white;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 10px;
+
+  font-size: 15px;
+
+  min-width: 60px;
+
+  cursor: pointer;
+}
+
+.control-icon {
+  width: 58px;
+  height: 58px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(40,40,40,.85);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 25px;
+}
+
+
+/* END BUTTON */
+
+.end-icon {
+  width: 68px;
+  height: 68px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #ef2525;
+
+  font-size: 30px;
+
+  transform:
+    rotate(135deg);
+}
+
+
+/* =========================
+   ACTIVE BUTTON
+========================= */
+
+.control-item.active .control-icon {
+  background: white;
+  color: black;
+}
+
+
+/* =========================
+   LOADING
+========================= */
+
+.loading-screen {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 100;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #111;
+
+  color: white;
+}
+
+.loading-spinner {
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+
+  border:
+    4px solid rgba(255,255,255,.25);
+
+  border-top-color: white;
+
+  animation:
+    spin .8s linear infinite;
+}
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+.error-screen {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 200;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #111;
+
+  color: white;
+
+  text-align: center;
+
+  padding: 30px;
+}
+
+.error-button {
+  padding: 12px 25px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  font-size: 16px;
+
+  margin-top: 20px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 500px) {
+
+  .self-preview {
+
+    width: 115px;
+    height: 155px;
+
+  }
+
+  .call-controls {
+
+    gap: 2px;
+
+  }
+
+  .control-item {
+
+    font-size: 11px;
+
+    min-width: 50px;
+
+  }
+
+  .control-icon {
+
+    width: 50px;
+    height: 50px;
+
+    font-size: 20px;
+
+  }
+
+  .end-icon {
+
+    width: 60px;
+    height: 60px;
+
+  }
+
+}
