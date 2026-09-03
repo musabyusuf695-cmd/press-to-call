@@ -15,11 +15,14 @@ import {
 // GET HTML ELEMENTS
 // ==============================
 
+const profileInitial =
+  document.getElementById("profileInitial");
+
 const profileImage =
   document.getElementById("profileImage");
 
-const profileInitial =
-  document.getElementById("profileInitial");
+const profileVideo =
+  document.getElementById("profileVideo");
 
 const callerName =
   document.getElementById("callerName");
@@ -35,7 +38,7 @@ const declineBtn =
 
 
 // ==============================
-// GET CALL ID FROM URL
+// GET CALL ID
 // ==============================
 
 const params =
@@ -57,9 +60,6 @@ if (!callId) {
   callingText.textContent =
     "This call link is invalid.";
 
-  profileInitial.textContent =
-    "?";
-
   answerBtn.disabled = true;
 
   declineBtn.disabled = true;
@@ -72,7 +72,7 @@ if (!callId) {
 
 
 // ==============================
-// LOAD CALL INFORMATION
+// LOAD CALL
 // ==============================
 
 async function loadCall() {
@@ -87,7 +87,7 @@ async function loadCall() {
 
 
     // ==========================
-    // CALL DOES NOT EXIST
+    // CALL NOT FOUND
     // ==========================
 
     if (!callSnap.exists()) {
@@ -103,15 +103,22 @@ async function loadCall() {
 
       answerBtn.disabled = true;
 
-      declineBtn.disabled = true;
-
       return;
 
     }
 
 
+    // ==========================
+    // GET CALL DATA
+    // ==========================
+
     const callData =
       callSnap.data();
+
+    console.log(
+      "CALL DATA:",
+      callData
+    );
 
 
     // ==========================
@@ -120,17 +127,30 @@ async function loadCall() {
 
     const name =
       callData.name ||
+      callData.callerName ||
       "Unknown";
-
 
     callerName.textContent =
       name;
 
 
-    // Default initial
+    // ==========================
+    // FIRST LETTER
+    // ==========================
 
     profileInitial.textContent =
-      name.charAt(0).toUpperCase();
+      name
+        .charAt(0)
+        .toUpperCase();
+
+
+    // ==========================
+    // GET MEDIA TYPE
+    // ==========================
+
+    const mediaType =
+      callData.mediaType ||
+      "photo";
 
 
     // ==========================
@@ -140,19 +160,31 @@ async function loadCall() {
     const mediaPath =
       callData.mediaPath ||
       callData.media ||
-      callData.photo ||
-      callData.video ||
+      callData.photoPath ||
+      callData.videoPath ||
       "";
 
 
+    console.log(
+      "MEDIA PATH:",
+      mediaPath
+    );
+
+
     // ==========================
-    // SHOW PHOTO AS PROFILE IMAGE
+    // SHOW PHOTO
     // ==========================
 
     if (
-      mediaPath &&
-      callData.mediaType === "photo"
+      mediaType === "photo" &&
+      mediaPath
     ) {
+
+      profileInitial.style.display =
+        "none";
+
+      profileVideo.style.display =
+        "none";
 
       profileImage.src =
         mediaPath;
@@ -160,15 +192,14 @@ async function loadCall() {
       profileImage.style.display =
         "block";
 
-      profileInitial.style.display =
-        "none";
-
-
-      // If image cannot load,
-      // show the letter again
 
       profileImage.onerror =
         function () {
+
+          console.log(
+            "IMAGE FAILED TO LOAD:",
+            mediaPath
+          );
 
           profileImage.style.display =
             "none";
@@ -178,11 +209,70 @@ async function loadCall() {
 
         };
 
-    } else {
+    }
 
-      // No photo or this is video
+
+    // ==========================
+    // SHOW VIDEO
+    // ==========================
+
+    else if (
+      mediaType === "video" &&
+      mediaPath
+    ) {
+
+      profileInitial.style.display =
+        "none";
 
       profileImage.style.display =
+        "none";
+
+      profileVideo.src =
+        mediaPath;
+
+      profileVideo.style.display =
+        "block";
+
+
+      profileVideo.play()
+        .catch(() => {
+
+          console.log(
+            "Video autoplay was blocked"
+          );
+
+        });
+
+
+      profileVideo.onerror =
+        function () {
+
+          console.log(
+            "VIDEO FAILED TO LOAD:",
+            mediaPath
+          );
+
+          profileVideo.style.display =
+            "none";
+
+          profileInitial.style.display =
+            "flex";
+
+        };
+
+    }
+
+
+    // ==========================
+    // NO MEDIA
+    // ==========================
+
+    else {
+
+      profileImage.style.display =
+        "none";
+
+      profileVideo.style.display =
         "none";
 
       profileInitial.style.display =
@@ -192,10 +282,10 @@ async function loadCall() {
 
 
     // ==========================
-    // SHOW CALL TYPE
+    // CALL TEXT
     // ==========================
 
-    if (callData.mediaType === "video") {
+    if (mediaType === "video") {
 
       callingText.textContent =
         "Incoming video call...";
@@ -212,28 +302,20 @@ async function loadCall() {
     // UPDATE STATUS
     // ==========================
 
-    try {
-
-      await updateDoc(
-        callRef,
-        {
-          status: "ringing"
-        }
-      );
-
-    } catch (error) {
-
-      console.log(
-        "Status update failed:",
-        error
-      );
-
-    }
+    await updateDoc(
+      callRef,
+      {
+        status: "ringing"
+      }
+    );
 
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "LOAD ERROR:",
+      error
+    );
 
     callerName.textContent =
       "Connection Error";
@@ -241,12 +323,7 @@ async function loadCall() {
     callingText.textContent =
       "Unable to load this call.";
 
-    profileInitial.textContent =
-      "?";
-
     answerBtn.disabled = true;
-
-    declineBtn.disabled = true;
 
   }
 
@@ -286,16 +363,14 @@ answerBtn.addEventListener(
     } catch (error) {
 
       console.error(
-        "Could not update call:",
+        "Could not answer call:",
         error
       );
 
     }
 
 
-    // ==========================
-    // OPEN VIDEO/PHOTO SCREEN
-    // ==========================
+    // GO TO CALL SCREEN
 
     window.location.href =
       "room.html?call=" +
@@ -332,7 +407,7 @@ declineBtn.addEventListener(
     } catch (error) {
 
       console.error(
-        "Could not update call:",
+        "Could not decline call:",
         error
       );
 
